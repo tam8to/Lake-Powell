@@ -1,0 +1,361 @@
+---
+title: "Lake Powell: Preliminary data analysis"
+author: "Tammy Lee"
+date: "September 9, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+
+# Setwd()
+
+powell <- readRDS("data/predam_tidiest.rds")
+powell$sample_dt <- mdy(powell$sample_dt)
+powell$rev.parameter <- as.character(powell$rev.parameter)
+```
+
+## Project description
+
+Long term effects of dams and reservoirs on water quality remain poorly understood. Lake Powell is a reservoir on the Colorado River that was the result of the Glen Canyon Dam. Glen Canyon Dam construction began on February 11, 1959 and finished on September 13, 1963. Amazingly, several sites were monitored for various environmental parameters (e.g. physical, nutrient, sediment) since 1928 by several different government agencies. This long term publically available data set has yet to be fully analyzed. The purpose of this report is to provide preliminary results that examine which parameters have been continuously monitored across all sites, and determine if there are any significant differences amonng sites for each parameter before and after dam construction. Data collected and organized for this report will be used for future analyses examining the influences of dam construction and other potential environmental effects on water quality and biogeochemical processes.
+
+## Methods
+
+### Site descriptions
+
+The five sites used for this project inlcude:
+
+* Colorado River at Cisco (Cisco)
+* San Juan at Bluff (Bluff)
+* Green River at Green River (Green)
+* Colorado River at Lees Ferry (Lees)
+* Colorado River at Colorado River, near Grand Canyon (Colorado)
+
+Cisco, Green, and Bluff represent boundary conditions for Lake Powell and are the three major tributaries to Lake Powell (Green and Colorado merge before entering Lake Powell but these sites have long term monitoring data available). Lees is approximately 25 km below the dam and measures what is coming out of the lake. Colorado is a site within Grand Canyon and provides an approximation of any biogeochemical processing that might be occuring within the river istself.
+
+### Data collection and analysis
+
+Data are publicly available and can be download through NWIS (https://nwis.waterdata.usgs.gov/usa/nwis/qwdata) for each of the five sites. Environmental parameters that were monitored continuously across all sites for at least 10 years prior to dam construction were selected. Further criteria and and determination of which of the intial 936 parameters were excluded from the analysis and additional details and work for cleaning and tidying up data can be found at https://github.com/tam8to/Lake-Powell. 
+
+Among group comparisons for five specific parameters were assessed using Kruskal-Wallis for pre- and post-dam construction (total of ten comparisons). Parameters included were nitrate as nitrogen, calcium, magnesium, bicarbonate, and pH.
+
+## Summary
+
+A total of 33 parameters were initally examined across all five sites. Many paraments tended to exhibit strongly observable cyclical patterns prior to dam construction. Post-dam construction there seemed to be a lag response with an attenuated, less distinct cyclical pattern.
+
+Of the 33 parameters, five were further examined for among group comparisons pre- and post-dam construction. For the most part nitrate concentrations were different across all sites pre- and post-dam construction. Magnesium and bicarbonate concetrations went from different across all sites pre-dam construction to more homogenous most sites post-dam. Calcium concentrations went from some sites being simiar to more sites being similar. pH was the only parameter in this analysis that went from being more similar across sites to becoming more different across sites post-dam construction.
+
+## Future directions
+
+Although these preliminary results suggest changes in parameter across sites might be due to dam construction, further analyses must be conducted to attribute these differences to dam construction and additional parameters should also be investigated. The preliminary analyses of this project serve to provide a first pass of available data and help decide furture decisions on which parameters to focus on and how best to continue analyzing this long term data set. Current next steps include time-series analysis.
+
+## Results
+
+There were approximately 967 different parameters measured for Bluff, Colorado, Green, Lees, and Cisco combined. Of those 967, 33 were of interest based on availabililty of data across all sites. These 33 parameters were further cleaned to a total of 27 usable parameters (several parameters were combined with other paramters because measurement methods were changed at some point during the monitoring period). Table 1 provides the parameter code, the group it belongs to, and description.
+
+```{r, echo = F, include = F}
+powell$rev.parameter <- as.factor(powell$rev.parameter)
+powell$parameter <- as.factor(powell$parameter)
+
+parameter_table <- select(powell, Parameter = rev.parameter, Group = group, Description = description) %>%
+  distinct(Parameter, .keep_all = T) %>%
+  arrange(Group)
+```
+
+```{r kable table 1, echo = F, warning = F, error = F}
+kable(parameter_table, 
+      caption = "Table 1. Code and description of parameters used in this analysis. Codes with a \"c\" designation were combined",
+      knitr.kable.format = "html")
+```
+
+### Inorganic, Major, Metals
+
+Four parameters fall under the *Inorganics, Major, Metals* group. Figure 1 shows measurements taken for each parameter across all sites. The shaded region represents dam construction period. For each of the parameters up through the construction of the Glen Canyon dam there is a cyclical pattern of concentration levels across all sites. Post-dam construction, that pattern attenuates across all sites.
+```{r, echo = F, warning = F, error = F, include = F}
+dam <- data.frame(xmin = ymd("1959-02-11"),
+                  xmax = ymd("1963-09-13"),
+                  ymin = -Inf,
+                  ymax = Inf)
+
+imm <- filter(powell, group == "Inorganics, Major, Metals")
+imm$site.name <- as.factor(imm$site.name)
+imm$measurement <- as.numeric(imm$measurement)
+imm_fig <- ggplot() +
+  geom_rect(data = dam,
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5) +
+  geom_point(data = imm, aes(x = sample_dt, y = measurement, color = site.name), size = 0.3) +
+  facet_grid(rev.parameter ~ ., scales = "free_y") +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 1. Parameter group: Inorganics, Major, Metals" ) +
+  theme_bw()
+
+
+```
+```{r fig1, echo = F, warning = F, error = F, fig.height =  8, fig.width= 10}
+plot(imm_fig)
+```
+
+
+### Inorganic, Major, Non-metals
+
+Seven parameters fall under the *Inorganics, Major, Non-metals* group. Figure 2 shows measurements taken for each parameter across all sites. Several of the parameters have an observable cyclical periodicity as observed with the *Inorganics, Major, Metals* group prior to dam construction. Post-dam construction that pattern attenuates over time.
+
+```{r, echo = F, warning = F, error = F, include = F}
+imn <- filter(powell, group == "Inorganics, Major, Non-metals")
+imn$measurement <- as.numeric(imn$measurement)
+
+# Eliminate outliers
+imn_p00191 <- imn %>%
+  filter(rev.parameter == "p00191") %>%
+  filter(measurement < 0.6) %>%
+  as.data.frame()
+imn_p00405 <- imn %>%
+  filter(rev.parameter == "p00405") %>%
+  filter(measurement < 50000) %>%
+  as.data.frame()
+imn_p00410 <- imn %>%
+  filter(rev.parameter == "p00410c") %>%
+  filter(measurement < 2000) %>%
+  as.data.frame()
+imn_p00440 <- imn %>%
+  filter(rev.parameter == "p00440c") %>%
+  filter(measurement < 2500) %>%
+  as.data.frame()
+
+imn_t <- filter(imn, !rev.parameter %in% c("p00191", "p00405", "p00410c", "p00440c"))
+imn_sub <- bind_rows(imn_t, imn_p00191, imn_p00405, imn_p00410, imn_p00440)
+
+
+imn_sub$site.name <- as.factor(imn_sub$site.name)
+imn_sub$measurement <- as.numeric(imn_sub$measurement)
+imn_sub$rev.parameter <- as.factor(imn_sub$rev.parameter)
+imn_fig <- ggplot() +
+  geom_rect(data = dam,
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5) +
+  geom_point(data = imn_sub, aes(x = sample_dt, y = measurement, color = site.name), size = 0.3) +
+  facet_grid(rev.parameter ~ ., scales = "free_y") +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 2. Parameter group: Inorganics, Major, Non-metals" ) +
+  theme_bw()
+
+
+```
+```{r fig2, echo = F, warning = F, error = F, fig.height = 10, fig.width=10}
+plot(imn_fig)
+```
+
+
+### Inorganic, Minor, Metals & Sediment
+
+One parameter falls under each of the *Inorganics, Minor, Metals* and *Sediment* groups. Data seems to be incomplete for Iron concentration (p01046) across all sites, and range of values for suspended sediment concentration (p80145) varies across sites (Fig. 3).
+
+```{r, include = F, echo = F}
+imms <- filter(powell, group %in% c("Inorganics, Minor, Metals", "Sediment"))
+imms$site.name <- as.factor(imms$site.name)
+imms$measurement <- as.numeric(imms$measurement)
+imms$rev.parameter <- as.factor(imms$rev.parameter)
+imms_fig <- ggplot() +
+  geom_rect(data = dam,
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5) +
+  geom_point(data = imms, aes(x = sample_dt, y = measurement, color = site.name), size = 0.3) +
+  facet_grid(rev.parameter ~ ., scales = "free_y") +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 3. Parameter groups: Inorganics, Minor, Metals & Sediment" ) +
+  theme_bw()
+```
+```{r, echo = F, warning = F, error = F, fig.height = 4, fig.width=10}
+plot(imms_fig)
+```
+
+### Nutrient
+
+Five parameters fall under the *Nutrient* group. Although data are continous for nitrate as nitrogen and nitrate as nitrate (two different methods for measuring nitrate), other parameters are included because these water quality variables are of interest for further analyses (Fig 4).
+
+```{r, include = F, echo = F}
+nut <- filter(powell, group == "Nutrient") %>%
+  filter(rev.parameter != "p00671") %>%
+  as.data.frame()
+nut$site.name <- as.factor(nut$site.name)
+nut$measurement <- as.numeric(nut$measurement)
+nut$rev.parameter <- as.factor(nut$rev.parameter)
+nut_fig <- ggplot() +
+  geom_rect(data = dam,
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5) +
+  geom_point(data = nut, aes(x = sample_dt, y = measurement, color = site.name), size = 0.3) +
+  facet_grid(rev.parameter ~ ., scales = "free_y") +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 4. Parameter group: Nutrient" ) +
+  theme_bw()
+```
+```{r, echo = F, warning = F, error = F, fig.height = 8, fig.width=10}
+plot(nut_fig)
+```
+
+### Physical
+
+Six parameters fall under the *Physical* group. Several physical parameters exhibit similar observable patterns as other parameters where prior to dam construction there is a discernable periodicity and then post dam construction there is an attenuated pattern (Fig. 5). Unlike other physical parameters, pH levels show a trend of increasing levels over time.
+
+```{r, include = F, echo = F}
+# Eliminate outliers
+phys <- filter(powell, group == "Physical") %>%
+  as.data.frame()
+phys$measurement <- as.numeric(phys$measurement)
+
+p00010 <- filter(phys, rev.parameter == "p00010") %>%
+  filter(measurement < 200) %>%
+  as.data.frame()
+
+phys_t <- filter(phys, rev.parameter != "p00010")
+phys_sub <- bind_rows(phys_t, p00010)
+phys_sub$site.name <- as.factor(phys_sub$site.name)
+phys_sub$rev.parameter <- as.factor(phys_sub$rev.parameter)
+phys_fig <- ggplot() +
+  geom_rect(data = dam,
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5) +
+  geom_point(data = phys_sub, aes(x = sample_dt, y = measurement, color = site.name), size = 0.3) +
+  facet_grid(rev.parameter ~ ., scales = "free_y") +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 5. Parameter group: Physical" ) +
+  theme_bw()
+```
+```{r, echo = F, warning = F, error = F, fig.height = 8, fig.width=10}
+plot(phys_fig)
+```
+
+### Among group comparisons pre- and post-dam construction
+
+```{r, echo = F, warning = F, error = F, include = F}
+powell$site.name <- as.character(powell$site.name)
+predam <- filter(powell, sample_dt < 1959-02-11) %>%
+  filter(!rev.parameter %in% c("p00028", "p82398")) %>%
+  filter(group != "Information")
+predam$site.name <- as.factor(predam$site.name)
+predam$measurement <- as.numeric(predam$measurement)
+postdam <- filter(powell, sample_dt > 1963-09-13) %>%
+  filter(group != "Information")
+postdam$site.name <- as.factor(postdam$site.name)
+postdam$measurement <- as.numeric(postdam$measurement)
+
+pre.NO3 <- filter(predam, rev.parameter == "p00613c")
+pre.pH <- filter(predam, rev.parameter == "p00400c")
+pre.Ca <- filter(predam, rev.parameter == "p00915")
+pre.Mg <- filter(predam, rev.parameter == "p00925")
+pre.HCO3 <- filter(predam, rev.parameter == "p00440c")
+
+post.NO3 <- filter(postdam, rev.parameter == "p00613c")
+post.pH <- filter(postdam, rev.parameter == "p00400c")
+post.Ca <- filter(postdam, rev.parameter == "p00915")
+post.Mg <- filter(postdam, rev.parameter == "p00925")
+post.HCO3 <- filter(postdam, rev.parameter == "p00440c")
+```
+
+#### Nitrate measured by nitrogen (p00613c)
+Pre-dam, all sites were significantly different in nitrate concention with the exception of Lees Ferry and Colorado. Post-dam, Lees Ferry and Colorado were significantly different, but Lees Ferry and Bluff had similar nitrate concentrations.
+
+Pre-dam:
+```{r, echo = F, warning = F, error = F}
+library(dunn.test)
+
+# NO3
+# kruskal.test(measurement ~ factor(site.name), data = pre.NO3) # p < 2.2e-16
+dunn.test(pre.NO3$measurement, g = factor(pre.NO3$site.name), method = "bonferroni") # Lees and Colorado same
+```
+
+Post-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = post.NO3) # p < 2.2e-16
+dunn.test(post.NO3$measurement, g = factor(post.NO3$site.name), method = "bonferroni") # All different
+```
+
+#### pH (p00400c)
+Pre-dam, Green was the only site to be signifcantly different from all other sites, and Cisco was signifcantly different from Colorado. All other sites were similar. Post-dam, Green and Lees Ferry were signifcantly different compared to all other sites, with Bluff significantly different from Colorado and Cisco. Post-dam we see more sites were signicantly different in pH than pre-dam.
+
+Pre-dam:
+```{r, echo = F, warning = F, error = F}
+# pH
+# kruskal.test(measurement ~ factor(site.name), data = pre.pH) # p < 2.2e-16
+dunn.test(pre.pH$measurement, g = factor(pre.pH$site.name), method = "bonferroni") # Green different from rest, Cisco different from Colorado,
+```
+
+Post-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = post.pH) # p < 2.2e-16
+dunn.test(post.pH$measurement, g = factor(post.pH$site.name), method = "bonferroni")
+# Green different from rest
+# Lees different from rest
+# Colorado same as Bluff
+# Cisco same as Bluff
+```
+
+#### Calcium 
+Pre-dam, Lees Ferry and Bluff were the only two sites with similar calcium concentrations. Post-dam, we see more statistically similar calcium concentrations across sites with Colorado being similar to Bluff, Cisco, and Lees Ferry; and Lees Ferry and Bluff remaining the same.
+
+Pre-dam:
+```{r, echo = F, warning = F, error = F}
+# Ca
+# kruskal.test(measurement ~ factor(site.name), data = pre.Ca) # p < 2.2e-16
+dunn.test(pre.Ca$measurement, g = factor(pre.Ca$site.name), method = "bonferroni") # Lee and Bluff same
+```
+
+Post-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = post.Ca) # p < 2.2e-16
+dunn.test(post.Ca$measurement, g = factor(post.Ca$site.name), method = "bonferroni")
+# Bluff same as Colorado and Lees
+# Cisco same as Colorado
+# Lees and Colorado same
+```
+
+#### Magnesium (p00925)
+Pre-dam, all sites exhibited signicantly different magnesium concentrations. Post-dam, Cisco showed similar concentration levels as Colorado and Green, and Green was similar to Colorado.
+
+Pre-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = pre.Mg) # p < 2.2e-16
+dunn.test(pre.Mg$measurement, g = factor(pre.Mg$site.name), method = "bonferroni") # All different
+```
+Post-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = post.Mg) # p < 2.2e-16
+dunn.test(post.Mg$measurement, g = factor(post.Mg$site.name), method = "bonferroni") 
+# Green same as Cisco and Colorado
+# Cisco and Colorado same
+```
+
+#### Bicarbonate (p00440c)
+Similar to magnesium, bicarbonate concentrations were different across all sites pre-dam. Post-dam, Bluff and Lees Ferry were similar as were Cisco and Colorado, and Green and Colorado.
+
+Pre-dam:
+```{r, echo = F, warning = F, error = F}
+# HCO3
+# kruskal.test(measurement ~ factor(site.name), data = pre.HCO3) # p < 2.2e-16
+dunn.test(pre.HCO3$measurement, g = factor(pre.HCO3$site.name), method = "bonferroni") # All different
+```
+Post-dam:
+```{r, echo = F, warning = F, error = F}
+# kruskal.test(measurement ~ factor(site.name), data = post.HCO3) # p < 2.2e-16
+dunn.test(post.HCO3$measurement, g = factor(post.HCO3$site.name), method = "bonferroni") 
+# Bluff and Lees same
+# Cisco same as Colorado
+# Colorado and Green same
+```
+

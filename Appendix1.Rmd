@@ -1,0 +1,267 @@
+---
+title: "Appendix A"
+author: "Tammy Lee"
+date: "September 9, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+# Set your working drive
+predam_firstpass <- readRDS("data/predam_tidier.rds")
+predam_firstpass$parameter <- as.character(predam_firstpass$parameter)
+predam_firstpass$sample_dt <- mdy(predam_firstpass$sample_dt)
+```
+
+## Description
+
+A total of 78 parameters of interest remain after cleaning and tidying up Lake Powell data. These parameters were measured at across all sites and were at some point measured before 1950. A few methods for taking parameter measurements changed at least once during the monitoring effort. The following figures show parameter measurements for all lake sample sites in order to get a better idea of what how consistent the remaining parameters were measured over time.
+
+## Inorganics, Major, Metals
+
+Seven parameters fall under the *Inorganics, Major, Metals* group. Figure 1 shows measurements taken at each site across time for each parameter. Table 1 shows the parameter code and description.
+
+```{r cars, echo = F, include = F}
+imm <- filter(predam_firstpass, group == "Inorganics, Major, Metals")
+imm$parameter <- as.factor(imm$parameter)
+imm$site.name <- as.factor(imm$site.name)
+imm$measurement <- as.numeric(imm$measurement)
+imm_fig <- imm %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 1. Parameter group: Inorganics, Major, Metals" ) +
+  theme_bw()
+
+imm_table <- distinct(imm, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+```
+
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=10, fig.width=8}
+plot(imm_fig)
+```
+```{r kable, echo = F, results = 'asis'}
+kable(imm_table, caption = "Table 1: List of parameters and description associated with Fig 1.")
+```
+
+## Inorganics, Major, Non-metals
+
+A total of 16 parameters were measured for *Inorganics, Major, Non-metals*. Figure 2 shows all parameter measurements by parameter and site. Table 2 provides the parameter code and description for Figure 2.
+
+```{r, include = F, echo = F}
+imn <- filter(predam_firstpass, group == "Inorganics, Major, Non-metals")
+imn$parameter <- as.factor(imn$parameter)
+imn$site.name <- as.factor(imn$site.name)
+imn$measurement <- as.numeric(imn$measurement)
+# initial figure showed outliers for some of the parameters, filter outliers
+imn_p00191 <- imn %>%
+  filter(parameter == "p00191") %>%
+  filter(measurement < 0.6) %>%
+  as.data.frame()
+imn_p00300 <- imn %>%
+  filter(parameter == "p00300") %>%
+  filter(measurement > 5) %>%
+  as.data.frame()
+imn_p00405 <- imn %>%
+  filter(parameter == "p00405") %>%
+  filter(measurement < 50000) %>%
+  as.data.frame()
+imn_p00410 <- imn %>%
+  filter(parameter == "p00410") %>%
+  filter(measurement < 2000) %>%
+  as.data.frame()
+imn_p00440 <- imn %>%
+  filter(parameter == "p00440") %>%
+  filter(measurement < 2500) %>%
+  as.data.frame()
+
+imn_t <- filter(imn, !parameter %in% c("p00191", "p00300", "p00405", "p00410", "p00440"))
+imn_sub <- bind_rows(imn_t, imn_p00191, imn_p00300, imn_p00405, imn_p00410, imn_p00440)
+
+imn_fig <- imn_sub %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 2. Parameter group: Inorganics, Major, Metals" ) +
+  theme_bw()
+
+# Create table of parameter codes and description.
+imn_table <- distinct(imn, parameter, .keep_all = T) %>%
+  select(parameter, description)
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=20, fig.width=8}
+plot(imn_fig)
+```
+
+```{r kable2, results = 'asis', echo = F}
+kable(imn_table, caption = "Table 2: List of parameters and description.")
+```
+
+## Inorganics, Minor, Metals
+
+A total of 16 parameters were measured for *Inorganics, Minor, Metals*. Figure 3 shows all parameter measurements by parameter and site. Table 3 provides the parameter code and description for Figure 3. Most of these parameters can be excluded from further analysis.
+
+```{r, include = F, echo = F}
+minormet <- filter(predam_firstpass, group == "Inorganics, Minor, Metals")
+minormet$parameter <- as.factor(minormet$parameter)
+minormet$site.name <- as.factor(minormet$site.name)
+minormet$measurement <- as.numeric(minormet$measurement)
+minormet_fig <- minormet %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 3. Parameter group: Inorganics, Minor, Metals" ) +
+  theme_bw()
+
+minormet_table <- distinct(minormet, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=20, fig.width=8}
+plot(minormet_fig)
+```
+
+```{r kable3, results = 'asis', echo = F}
+kable(minormet_table, caption = "Table 3: List of parameters and description for Fig 3.")
+```
+
+## Inorganics, Minor, Non-metals
+
+A total of four parameters were measured for *Inorganics, Minor, Non-metals*. Figure 4 shows all parameter measurements by parameter and site. Table 4 provides the parameter code and description for Figure 4. All of these parameters can be excluded from further analysis (there might have been some zeros in the raw file instead of NAs).
+
+```{r, include = F, echo = F}
+minornm <- filter(predam_firstpass, group == "Inorganics, Minor, Non-metals")
+minornm$parameter <- as.factor(minornm$parameter)
+minornm$site.name <- as.factor(minornm$site.name)
+minornm$measurement <- as.numeric(minornm$measurement)
+minornm_fig <- minornm %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 4. Parameter group: Inorganics, Minor, Non-metals" ) +
+  theme_bw()
+
+minornm_table <- distinct(minornm, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=4, fig.width=8}
+plot(minornm_fig)
+```
+
+```{r kable4, results = 'asis', echo = F}
+kable(minornm_table, caption = "Table 4: List of parameters and description for Fig 4.")
+```
+
+## Nutrient
+
+A total of 19 parameters were measured for *Nutrient*. Figure 5 shows all parameter measurements by parameter and site. Table 4 provides the parameter code and description for Figure 5. All of these parameters can be excluded from further analysis (there might have been some zeros in the raw file instead of NAs).
+
+```{r, include = F, echo = F}
+nutrient <- filter(predam_firstpass, group == "Nutrient")
+nutrient$parameter <- as.factor(nutrient$parameter)
+nutrient$site.name <- as.factor(nutrient$site.name)
+nutrient$measurement <- as.numeric(nutrient$measurement)
+nutrient_fig <- nutrient %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 5. Parameter group: Nutrient" ) +
+  theme_bw()
+
+nutrient_table <- distinct(nutrient, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=20, fig.width=8}
+plot(nutrient_fig)
+```
+
+```{r kable5, results = 'asis', echo = F}
+kable(nutrient_table, caption = "Table 5: List of parameters and description for Fig 5.")
+```
+
+## Physical
+
+A total of 11 parameters were measured for *Physical*. Figure 6 shows all parameter measurements by parameter and site. Table 4 provides the parameter code and description for Figure 6. All of these parameters can be excluded from further analysis (there might have been some zeros in the raw file instead of NAs).
+
+```{r, include = F, echo = F}
+physical <- filter(predam_firstpass, group == "Physical")
+physical$parameter <- as.factor(physical$parameter)
+physical$site.name <- as.factor(physical$site.name)
+physical$measurement <- as.numeric(physical$measurement)
+physical_fig <- physical %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 5. Parameter group: Physical" ) +
+  theme_bw()
+
+physical_table <- distinct(physical, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=15, fig.width=8}
+plot(physical_fig)
+```
+
+```{r kable6, results = 'asis', echo = F}
+kable(physical_table, caption = "Table 6: List of parameters and description for Fig 6.")
+```
+
+## Sediment
+
+A total of two parameters were measured for *Sediment*. Figure 6 shows all parameter measurements by parameter and site. Table 4 provides the parameter code and description for Figure 6. All of these parameters can be excluded from further analysis (there might have been some zeros in the raw file instead of NAs).
+
+```{r, include = F, echo = F}
+sediment <- filter(predam_firstpass, group == "Sediment")
+sediment$parameter <- as.factor(sediment$parameter)
+sediment$site.name <- as.factor(sediment$site.name)
+sediment$measurement <- as.numeric(sediment$measurement)
+sediment_fig <- sediment %>% 
+  ggplot(aes(x = sample_dt, y = measurement, color = site.name)) +
+  facet_grid(parameter ~ ., scales = "free_y") +
+  geom_point(size = 0.3) +
+  guides(color = guide_legend(title ="Site")) +
+  xlab(NULL) +
+  ylab(NULL) +
+  ggtitle("Fig 5. Parameter group: Sediment" ) +
+  theme_bw()
+
+sediment_table <- distinct(sediment, parameter, .keep_all = T) %>%
+  select(parameter, description)  
+```
+
+```{r, echo=FALSE, error = F, warning = F, fig.height=3, fig.width=8}
+plot(sediment_fig)
+```
+
+```{r kable7, results = 'asis', echo = F}
+kable(sediment_table, caption = "Table 7: List of parameters and description for Fig 7.")
+```
