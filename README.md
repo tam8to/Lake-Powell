@@ -2,6 +2,7 @@
 
 Preliminary analysis of water chemistry data for Lake Powell dating back to 1928. Data are publicly available from NWIS. Data in this repository were pulled together by Bridget.  
 
+<<<<<<< HEAD
 ## What is in the data folder?
 
 powell\_cleanup.R shows annotated code on how _\*.rds_ files were created.
@@ -12,6 +13,8 @@ powell\_cleanup.R shows annotated code on how _\*.rds_ files were created.
 + _powell\_raw.rds_ combined data from all sites.
 + _powell.rds_ tidier version of raw.
 
+=======
+>>>>>>> 8e52a5f8c59dd2b998b5fddae01ba8a044e2eebf
 ## Contribution and user guidelines
 
 For any suggested updates, contributions, or problems with any of the files please file a pull request. If you'd like to use any or part of the work in this repository please ask us.
