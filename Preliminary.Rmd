@@ -1,7 +1,7 @@
 ---
 title: "Lake Powell: Preliminary data analysis"
 author: "Tammy Lee"
-date: "September 9, 2017"
+date: "September 11, 2017"
 output: html_document
 ---
 
@@ -21,13 +21,13 @@ powell$rev.parameter <- as.character(powell$rev.parameter)
 
 ## Project description
 
-Long term effects of dams and reservoirs on water quality remain poorly understood. Lake Powell is a reservoir on the Colorado River that was the result of the Glen Canyon Dam. Glen Canyon Dam construction began on February 11, 1959 and finished on September 13, 1963. Amazingly, several sites were monitored for various environmental parameters (e.g. physical, nutrient, sediment) since 1928 by several different government agencies. This long term publically available data set has yet to be fully analyzed. The purpose of this report is to provide preliminary results that examine which parameters have been continuously monitored across all sites, and determine if there are any significant differences among sites for each parameter before and after dam construction. Data collected and organized for this report will be used for future analyses examining the influences of dam construction and other potential environmental effects on water quality and biogeochemical processes.
+Long term effects of dams and reservoirs on water quality remain poorly understood. Lake Powell is a reservoir on the Colorado River that resulted from the Glen Canyon Dam. Glen Canyon Dam construction began on February 11, 1959 and finished on September 13, 1963. Amazingly, several sites were monitored for various environmental parameters (e.g. physical, nutrient, sediment) since 1928 by several different government agencies. This long-term publicly available data set has yet to be fully analyzed. The purpose of this report is to provide preliminary results examining parameters continuously monitored across all sites, and determine if there are any significant differences among sites for each parameter before and after dam construction. Data collected and organized for this report will be used for future analyses examining the influences of dam construction and other potential environmental effects on water quality and biogeochemical processes.
 
 ## Methods
 
 ### Site descriptions
 
-The five sites used for this project inlcude:
+The five sites used for this project include:
 
 * Colorado River at Cisco (Cisco)
 * San Juan at Bluff (Bluff)
@@ -35,27 +35,27 @@ The five sites used for this project inlcude:
 * Colorado River at Lees Ferry (Lees)
 * Colorado River at Colorado River, near Grand Canyon (Colorado)
 
-Cisco, Green, and Bluff represent boundary conditions for Lake Powell and are the three major tributaries to Lake Powell (Green and Colorado merge before entering Lake Powell but these sites have long term monitoring data available). Lees is approximately 25 km below the dam and measures what is coming out of the reservoir. Colorado is a site within Grand Canyon and provides an approximation of any biogeochemical processing that might be occuring within the river istself.
+Cisco, Green, and Bluff represent boundary conditions for Lake Powell and are the three major tributaries to Lake Powell (Green and Colorado merge before entering Lake Powell but these sites have long term monitoring data available). Lees is approximately 25 km below the dam and measures reservoir outflow. Colorado is a site within Grand Canyon and provides an approximation of any biogeochemical processing that might be occurring within the river itself.
 
 ### Data collection and analysis
 
-Data are publicly available and can be download through NWIS (https://nwis.waterdata.usgs.gov/usa/nwis/qwdata) for each of the five sites. Environmental parameters that were monitored continuously across all sites for at least 10 years prior to dam construction were selected. Additional criteria used to narrow down the inital 936 parameters as well as data cleaning steps can be found at https://github.com/tam8to/Lake-Powell. 
+Data are publicly available and can be download through NWIS (https://nwis.waterdata.usgs.gov/usa/nwis/qwdata) for each of the five sites. Environmental parameters monitored continuously across all sites for at least 10 years prior to dam construction were selected. Additional criteria used to select the initial 936 parameters as well as data cleaning steps can be found at https://github.com/tam8to/Lake-Powell. 
 
 Among group comparisons for five specific parameters were assessed using Kruskal-Wallis for pre- and post-dam construction (total of ten comparisons). Parameters included were nitrate as nitrogen, calcium, magnesium, bicarbonate, and pH.
 
 ## Summary
 
-A total of 33 parameters were initally examined across all five sites. Many paraments tended to exhibit strongly observable cyclical patterns prior to dam construction. Post-dam construction there seemed to be a lag response with an attenuated, less distinct cyclical pattern.
+A total of 33 parameters were initially examined across all five sites. Many paraments tended to exhibit strongly observable cyclical patterns prior to dam construction. Post-dam construction there appeared to be a lag response with an attenuated, less distinct cyclical pattern.
 
-Of the 33 parameters, five were further examined for among group comparisons pre- and post-dam construction. For the most part nitrate concentrations were different across all sites pre- and post-dam construction. Magnesium and bicarbonate concetrations went from different across all sites pre-dam construction to more homogenous most sites post-dam. Calcium concentrations went from some sites being simiar to more sites being similar. pH was the only parameter in this analysis that went from being more similar across sites to becoming more different across sites post-dam construction.
+Of the 33 parameters, five were further examined for among group comparisons pre- and post-dam construction. For the most part nitrate concentrations were different across all sites pre- and post-dam construction. Magnesium and bicarbonate concentrations went from heterogenous across all sites pre-dam construction to more homogenous across most sites post-dam construction. Calcium concentrations went from some sites being similar to more sites being similar. pH was the only parameter that went from more similar across sites to more different across sites post-dam construction.
 
 ## Future directions
 
-Although these preliminary results suggest changes in parameter across sites might be due to dam construction, further analyses must be conducted to attribute these differences to dam construction and additional parameters should also be investigated. In addition, two of the stations are located below Lake Powell, any changes upstream may be due to other factors not included in this preliminary analysis. The preliminary analyses of this project serve to provide a first pass of available data and help make furture decisions on which parameters to focus on and how best to continue analyzing this long term data set. Current next steps include time-series analysis.
+Although these preliminary results suggest parameter changes across sites might be due to dam construction, further analyses must be conducted and additional parameters investigated to fully attribute differences to dam construction.In addition, two of the stations are located below Lake Powell, and any changes upstream may be due to other factors not included in this preliminary analysis. The preliminary analyses of this project serve to provide a first pass of available data and help make future decisions about parameters and analyses on which to for this long-term data set. Current next steps include time-series analysis.
 
 ## Results
 
-There were approximately 967 different parameters measured for Bluff, Colorado, Green, Lees, and Cisco combined. Of those 967, 33 were of interest based on availabililty of data across all sites. These 33 parameters were further cleaned to a total of 27 usable parameters (several parameters were combined with other paramters because measurement methods were changed at some point during the monitoring period). Table 1 provides the parameter code, the group it belongs to, and description.
+There were approximately 967 different parameters measured for Bluff, Colorado, Green, Lees, and Cisco combined. Of those 967, 33 were of interest based on availability of data across all sites. These 33 parameters were further cleaned to a total of 27 usable parameters (several parameters were combined with other parameters because measurement methods were changed at some point during the monitoring period). Table 1 provides the parameter code, the group it belongs to, and description.
 
 ```{r, echo = F, include = F}
 powell$rev.parameter <- as.factor(powell$rev.parameter)
