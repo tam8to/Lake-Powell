@@ -125,7 +125,7 @@ $(document).ready(function () {
 
 <div id="project-description" class="section level2">
 <h2>Project description</h2>
-<p>Long term effects of dams and reservoirs on water quality remain poorly understood. Lake Powell is a reservoir on the Colorado River that was the result of the Glen Canyon Dam. Glen Canyon Dam construction began on February 11, 1959 and finished on September 13, 1963. Amazingly, several sites were monitored for various environmental parameters (e.g. physical, nutrient, sediment) since 1928 by several different government agencies. This long term publically available data set has yet to be fully analyzed. The purpose of this report is to provide preliminary results that examine which parameters have been continuously monitored across all sites, and determine if there are any significant differences amonng sites for each parameter before and after dam construction. Data collected and organized for this report will be used for future analyses examining the influences of dam construction and other potential environmental effects on water quality and biogeochemical processes.</p>
+<p>Long term effects of dams and reservoirs on water quality remain poorly understood. Lake Powell is a reservoir on the Colorado River that was the result of the Glen Canyon Dam. Glen Canyon Dam construction began on February 11, 1959 and finished on September 13, 1963. Amazingly, several sites were monitored for various environmental parameters (e.g. physical, nutrient, sediment) since 1928 by several different government agencies. This long term publically available data set has yet to be fully analyzed. The purpose of this report is to provide preliminary results that examine which parameters have been continuously monitored across all sites, and determine if there are any significant differences among sites for each parameter before and after dam construction. Data collected and organized for this report will be used for future analyses examining the influences of dam construction and other potential environmental effects on water quality and biogeochemical processes.</p>
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
@@ -139,11 +139,11 @@ $(document).ready(function () {
 <li>Colorado River at Lees Ferry (Lees)</li>
 <li>Colorado River at Colorado River, near Grand Canyon (Colorado)</li>
 </ul>
-<p>Cisco, Green, and Bluff represent boundary conditions for Lake Powell and are the three major tributaries to Lake Powell (Green and Colorado merge before entering Lake Powell but these sites have long term monitoring data available). Lees is approximately 25 km below the dam and measures what is coming out of the lake. Colorado is a site within Grand Canyon and provides an approximation of any biogeochemical processing that might be occuring within the river istself.</p>
+<p>Cisco, Green, and Bluff represent boundary conditions for Lake Powell and are the three major tributaries to Lake Powell (Green and Colorado merge before entering Lake Powell but these sites have long term monitoring data available). Lees is approximately 25 km below the dam and measures what is coming out of the reservoir. Colorado is a site within Grand Canyon and provides an approximation of any biogeochemical processing that might be occuring within the river istself.</p>
 </div>
 <div id="data-collection-and-analysis" class="section level3">
 <h3>Data collection and analysis</h3>
-<p>Data are publicly available and can be download through NWIS (<a href="https://nwis.waterdata.usgs.gov/usa/nwis/qwdata" class="uri">https://nwis.waterdata.usgs.gov/usa/nwis/qwdata</a>) for each of the five sites. Environmental parameters that were monitored continuously across all sites for at least 10 years prior to dam construction were selected. Further criteria and and determination of which of the intial 936 parameters were excluded from the analysis and additional details and work for cleaning and tidying up data can be found at <a href="https://github.com/tam8to/Lake-Powell" class="uri">https://github.com/tam8to/Lake-Powell</a>.</p>
+<p>Data are publicly available and can be download through NWIS (<a href="https://nwis.waterdata.usgs.gov/usa/nwis/qwdata" class="uri">https://nwis.waterdata.usgs.gov/usa/nwis/qwdata</a>) for each of the five sites. Environmental parameters that were monitored continuously across all sites for at least 10 years prior to dam construction were selected. Additional criteria used to narrow down the inital 936 parameters as well as data cleaning steps can be found at <a href="https://github.com/tam8to/Lake-Powell" class="uri">https://github.com/tam8to/Lake-Powell</a>.</p>
 <p>Among group comparisons for five specific parameters were assessed using Kruskal-Wallis for pre- and post-dam construction (total of ten comparisons). Parameters included were nitrate as nitrogen, calcium, magnesium, bicarbonate, and pH.</p>
 </div>
 </div>
@@ -154,7 +154,7 @@ $(document).ready(function () {
 </div>
 <div id="future-directions" class="section level2">
 <h2>Future directions</h2>
-<p>Although these preliminary results suggest changes in parameter across sites might be due to dam construction, further analyses must be conducted to attribute these differences to dam construction and additional parameters should also be investigated. The preliminary analyses of this project serve to provide a first pass of available data and help decide furture decisions on which parameters to focus on and how best to continue analyzing this long term data set. Current next steps include time-series analysis.</p>
+<p>Although these preliminary results suggest changes in parameter across sites might be due to dam construction, further analyses must be conducted to attribute these differences to dam construction and additional parameters should also be investigated. In addition, two of the stations are located below Lake Powell, any changes upstream may be due to other factors not included in this preliminary analysis. The preliminary analyses of this project serve to provide a first pass of available data and help make furture decisions on which parameters to focus on and how best to continue analyzing this long term data set. Current next steps include time-series analysis.</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
@@ -385,7 +385,7 @@ $(document).ready(function () {
 </div>
 <div id="ph-p00400c" class="section level4">
 <h4>pH (p00400c)</h4>
-<p>Pre-dam, Green was the only site to be signifcantly different from all other sites, and Cisco was signifcantly different from Colorado. All other sites were similar. Post-dam, Green and Lees Ferry were signifcantly different compared to all other sites, with Bluff significantly different from Colorado and Cisco. Post-dam we see more sites were signicantly different in pH than pre-dam.</p>
+<p>Pre-dam, Green was the only site to be signifcantly different from all other sites, and Cisco was signifcantly different from Colorado, and Green was significantly different from Less Ferry. All other sites were similar. Post-dam, Green and Lees Ferry were signifcantly different compared to all other sites, with Bluff significantly different from Colorado and Cisco. Post-dam we see more sites were signicantly different in pH than pre-dam.</p>
 <p>Pre-dam:</p>
 <pre><code>##   Kruskal-Wallis rank sum test
 ## 
