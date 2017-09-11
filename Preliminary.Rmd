@@ -1,8 +1,10 @@
 ---
-title: "Lake Powell: Preliminary data analysis"
+title: 'Lake Powell: Preliminary data analysis'
 author: "Tammy Lee"
 date: "September 11, 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE, echo = F}
@@ -67,9 +69,14 @@ parameter_table <- select(powell, Parameter = rev.parameter, Group = group, Desc
 ```
 
 ```{r kable table 1, echo = F, warning = F, error = F}
-kable(parameter_table, 
-      caption = "Table 1. Code and description of parameters used in this analysis. Codes with a \"c\" designation were combined",
-      knitr.kable.format = "html")
+# For knitting to hmtl
+# kable(parameter_table, 
+#       caption = "Table 1. Code and description of parameters used in this analysis. Codes with a \"c\" designation were combined",
+#       format = "html")
+# For knitting to pdf:
+kable(parameter_table, format = "latex",
+      caption = "Table 1. Code and description of parameters used in this analysis. Codes with a \"c\" designation were combined.") %>%
+  kable_styling(latex_options = c("scale_down"), full_width = F, font_size = 8)
 ```
 
 ### Inorganic, Major, Metals
